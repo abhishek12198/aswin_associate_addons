@@ -98,9 +98,16 @@ class ResUsers(models.Model):
 
     @api.depends('groups_id')
     def _compute_ac_access_level(self):
-        admin_group = self.env.ref('ac_customer_receivable.group_ac_customer_receivable_administrator')
+        # Groups may not exist yet during module install (models init before data).
+        admin_group = self.env.ref(
+            'ac_customer_receivable.group_ac_customer_receivable_administrator',
+            raise_if_not_found=False,
+        )
         for user in self:
-            user.ac_access_level = 'administrator' if admin_group in user.groups_id else 'staff'
+            if admin_group and admin_group in user.groups_id:
+                user.ac_access_level = 'administrator'
+            else:
+                user.ac_access_level = 'staff'
 
     def _inverse_ac_access_level(self):
         self._apply_ac_user_group_policy()
