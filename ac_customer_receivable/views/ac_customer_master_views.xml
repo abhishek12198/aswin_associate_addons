@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_customer_master_view_tree" model="ir.ui.view">
+        <field name="name">ac.customer.master.tree</field>
+        <field name="model">ac.customer.master</field>
+        <field name="arch" type="xml">
+            <tree string="Customers">
+                <field name="name"/>
+                <field name="contact_number"/>
+                <field name="email"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="receivable_balance" widget="monetary"/>
+                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_customer_master_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.master.form</field>
+        <field name="model">ac.customer.master</field>
+        <field name="arch" type="xml">
+            <form string="Customer">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_statement" type="object" class="oe_stat_button" icon="fa-money">
+                            <field name="receivable_balance" widget="statinfo" string="Receivable"/>
+                        </button>
+                    </div>
+                    <field name="photo" widget="image" class="oe_avatar" options="{'preview_image': 'photo'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Customer Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1" groups="!ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                            <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Contact Details">
+                            <field name="customer_company"/>
+                            <field name="contact_number"/>
+                            <field name="email" widget="email"/>
+                            <field name="aadhar_no"/>
+                            <field name="pan_no"/>
+                        </group>
+                        <group string="Address">
+                            <label for="house_no" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="house_no" placeholder="House No/Flat No" class="o_address_street"/>
+                                <field name="street" placeholder="Street Name" class="o_address_street"/>
+                                <field name="street2" placeholder="Street 2" class="o_address_street"/>
+                                <field name="city" placeholder="City" class="o_address_city"/>
+                                <field name="state_id" placeholder="State" class="o_address_state"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                                <field name="zip" placeholder="PINCODE" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Bank Account Details">
+                        <group>
+                            <field name="bank_account_number"/>
+                            <field name="bank_ifsc_code"/>
+                        </group>
+                        <group/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_master_view_search" model="ir.ui.view">
+        <field name="name">ac.customer.master.search</field>
+        <field name="model">ac.customer.master</field>
+        <field name="arch" type="xml">
+            <search string="Customers">
+                <field name="name"/>
+                <field name="contact_number"/>
+                <field name="email"/>
+                <field name="aadhar_no"/>
+                <field name="pan_no"/>
+                <field name="city"/>
+                <field name="state_id"/>
+                <field name="country_id"/>
+                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                <filter string="Receivable Due" name="receivable_due" domain="[('receivable_balance', '&gt;', 0)]"/>
+                <filter string="Credit Balance" name="credit_balance" domain="[('receivable_balance', '&lt;', 0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ac_customer_master_action" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">ac.customer.master</field>
+        <field name="view_mode">tree,form</field>
+        <field name="groups_id" eval="[(4, ref('group_ac_customer_receivable_staff')), (4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="search_view_id" ref="ac_customer_master_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first customer
+            </p>
+            <p>
+                Manage customer master records with contact, address, and receivable statement.
+            </p>
+        </field>
+    </record>
+
+</odoo>

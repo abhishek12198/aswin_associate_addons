@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_customer_statement_line_view_tree" model="ir.ui.view">
+        <field name="name">ac.customer.statement.line.tree</field>
+        <field name="model">ac.customer.statement.line</field>
+        <field name="arch" type="xml">
+            <tree string="Customer Statement" create="0" edit="0" delete="0"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-danger="debit &gt; 0"
+                  decoration-success="credit &gt; 0">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="transaction_type"/>
+                <field name="payment_method" optional="show"/>
+                <field name="job_id" optional="hide"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'posted'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_customer_statement_line_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.statement.line.form</field>
+        <field name="model">ac.customer.statement.line</field>
+        <field name="arch" type="xml">
+            <form string="Statement Transaction" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="transaction_type"/>
+                            <field name="payment_method"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="company_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="debit"/>
+                            <field name="credit"/>
+                            <field name="job_id"/>
+                            <field name="payment_id"/>
+                            <field name="notes"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_statement_line_action" model="ir.actions.act_window">
+        <field name="name">Customer Statements</field>
+        <field name="res_model">ac.customer.statement.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No statement transactions yet
+            </p>
+            <p>
+                Receivables are posted as debit and payments as credit automatically.
+            </p>
+        </field>
+    </record>
+
+    <record id="ac_customer_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.import.wizard.form</field>
+        <field name="model">ac.customer.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Customers">
+                <field name="state" invisible="1"/>
+                <field name="template_file" invisible="1"/>
+                <field name="template_filename" invisible="1"/>
+                <group attrs="{'invisible': [('state', '!=', 'upload')]}">
+                    <group>
+                        <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                        <field name="data_file" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" colspan="2">
+                        Download the Excel template, fill customer master fields, then upload the file.
+                        <br/>
+                        <strong>Mandatory:</strong> Name, Contact Number, Opening Balance.
+                        <br/>
+                        Positive opening balance = receivable (debit). Negative = credit balance.
+                    </div>
+                </group>
+                <group attrs="{'invisible': [('state', '!=', 'preview')]}">
+                    <field name="company_id" readonly="1"/>
+                    <field name="line_ids" nolabel="1">
+                        <tree create="0" delete="0" editable="bottom">
+                            <field name="row_number"/>
+                            <field name="name"/>
+                            <field name="contact_number"/>
+                            <field name="opening_balance"/>
+                            <field name="customer_company" optional="show"/>
+                            <field name="email" optional="show"/>
+                            <field name="aadhar_no" optional="hide"/>
+                            <field name="pan_no" optional="hide"/>
+                            <field name="city" optional="show"/>
+                            <field name="state_id" optional="hide"/>
+                            <field name="country_id" optional="hide"/>
+                            <field name="zip" optional="hide"/>
+                            <field name="action"/>
+                            <field name="existing_customer_id"/>
+                        </tree>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_download_template" string="Download Excel Template" type="object"
+                            class="btn-secondary"
+                            attrs="{'invisible': [('state', '!=', 'upload')]}"/>
+                    <button name="action_load_file" string="Load File" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'upload')]}"/>
+                    <button name="action_import" string="Import" type="object" class="btn-primary"
+                            attrs="{'invisible': [('state', '!=', 'preview')]}"/>
+                    <button name="action_back" string="Back" type="object"
+                            attrs="{'invisible': [('state', '!=', 'preview')]}"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_import_wizard_action" model="ir.actions.act_window">
+        <field name="name">Import Customers</field>
+        <field name="res_model">ac.customer.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,103 @@
+// ─── Form View ───────────────────────────────────────────────────────────────
+
+.o_form_view {
+    background: $ac-surface;
+    font-family: $font-family-sans-serif;
+
+    .o_form_sheet_bg {
+        background: $ac-surface;
+    }
+
+    .o_form_sheet {
+        border-radius: 6px;
+        box-shadow: 0 2px 12px rgba(12, 31, 77, 0.1);
+        border: 1px solid rgba(12, 31, 77, 0.08);
+        background: #ffffff;
+    }
+
+    .o_wrap_label label,
+    .o_field_label {
+        font-family: $font-family-sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: #4a5568;
+    }
+
+    // Statusbar stages: leave Odoo native (do not restyle .o_arrow_button).
+    .o_form_statusbar > .o_statusbar_buttons .btn:not(.o_arrow_button) {
+        font-family: $font-family-sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+
+    .o_stat_button {
+        border-color: rgba(12, 31, 77, 0.1);
+        transition: background 0.2s, border-color 0.2s;
+
+        &:hover {
+            background: rgba(43, 89, 195, 0.08);
+            border-color: $ac-blue;
+        }
+
+        .o_stat_text, .o_field_widget {
+            font-family: $font-family-sans-serif;
+        }
+    }
+
+    .o_form_buttons_edit {
+        .btn-primary {
+            background: $ac-blue;
+            border-color: $ac-blue;
+            color: white;
+            font-family: $font-family-sans-serif;
+            font-weight: 700;
+
+            &:hover { background: darken($ac-blue, 8%); border-color: darken($ac-blue, 8%); }
+        }
+
+        .btn-secondary {
+            font-family: $font-family-sans-serif;
+            font-weight: 600;
+        }
+    }
+}
+
+.o_mail_chatter {
+    .o_thread_message_content {
+        font-family: $font-family-sans-serif;
+        font-size: 1rem;
+    }
+    .o_chatter_topbar {
+        border-bottom: 1px solid rgba(12, 31, 77, 0.1);
+    }
+}
+
+@include media-breakpoint-only(md) {
+    .o_form_view {
+        .o_stat_button { min-width: 80px; padding: 4px 8px; }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .o_form_view {
+        .o_form_sheet {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            border-radius: 0;
+            border-left: none;
+            border-right: none;
+        }
+
+        .o_wrap_label label,
+        .o_field_label { font-size: 0.85rem; }
+
+        .o_form_statusbar > .o_statusbar_buttons .btn:not(.o_arrow_button) {
+            padding: 3px 8px;
+            font-size: 0.88rem;
+        }
+
+        .o_stat_info { min-width: 0; }
+    }
+}

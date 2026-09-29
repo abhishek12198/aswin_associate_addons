@@ -1,0 +1,53 @@
+// ─── Global font-size & canvas ───────────────────────────────────────────────
+
+html {
+    font-size: 14px !important;
+    background-color: $ac-surface;
+}
+
+body {
+    font-size: 14px;
+}
+
+.o_web_client,
+.o_action_manager,
+.o_view_controller {
+    font-size: 14px;
+}
+
+@include media-breakpoint-down(sm) {
+    html { font-size: 14px !important; }
+    body { font-size: 14px; }
+
+    .o_action_manager {
+        padding-left: 0 !important;
+    }
+}
+
+// Extra-large / LED displays — slightly larger base for readability at distance
+@media (min-width: 1920px) {
+    html { font-size: 15px !important; }
+    body { font-size: 15px; }
+    .o_web_client,
+    .o_action_manager,
+    .o_view_controller { font-size: 15px; }
+}
+
+@media (min-width: 2560px) {
+    html { font-size: 16px !important; }
+    body { font-size: 16px; }
+    .o_web_client,
+    .o_action_manager,
+    .o_view_controller { font-size: 16px; }
+}
+
+.o_pager input.o_pager_value,
+.o_control_panel .o_pager input.o_pager_value {
+    color: $ac-navy-dark !important;
+    background: #ffffff !important;
+    border: 1px solid $ac-blue !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-weight: 700 !important;
+    min-width: 40px !important;
+}

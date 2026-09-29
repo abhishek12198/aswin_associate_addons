@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ac_business_backend_theme.AppsBar" owl="1">
+        <div class="ac-apps-sidebar-panel">
+            <a href="/web" class="ac-sidebar-logo-wrap" t-att-title="props.companyName or 'Home'">
+                <img
+                    class="ac-sidebar-logo-icon"
+                    t-att-src="props.companyLogoUrl or '/web/binary/company_logo'"
+                    t-att-alt="props.companyName or 'Company'"
+                />
+            </a>
+            <ul class="ac-sidebar-menu">
+                <t t-foreach="props.apps" t-as="app" t-key="app.id">
+                    <li class="nav-item"
+                        t-att-class="{ 'ac-sidebar-active': props.currentApp === app }">
+                        <a
+                            t-att-href="getAppHref(app)"
+                            t-att-data-menu-id="app.id"
+                            t-att-data-menu-xmlid="app.xmlid"
+                            t-att-data-action-id="app.actionID or false"
+                            class="nav-link ac-sidebar-link"
+                            role="menuitem"
+                            t-att-title="app.name"
+                        >
+                            <img
+                                t-if="app.webIconData"
+                                class="ac-sidebar-icon"
+                                t-attf-src="data:image/png;base64,{{ app.webIconData }}"
+                            />
+                            <img
+                                t-else=""
+                                class="ac-sidebar-icon"
+                                t-att-src="props.companyLogoUrl or '/web/binary/company_logo'"
+                                t-att-alt="props.companyName or 'Company'"
+                            />
+                            <span class="ac-sidebar-name">
+                                <t t-esc="app.name"/>
+                            </span>
+                        </a>
+                    </li>
+                </t>
+            </ul>
+        </div>
+    </t>
+
+</templates>

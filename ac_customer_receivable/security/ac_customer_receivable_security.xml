@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_ac_customer_receivable" model="ir.module.category">
+        <field name="name">Customer Receivable</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="group_ac_customer_receivable_staff" model="res.groups">
+        <field name="name">Staff</field>
+        <field name="category_id" ref="module_category_ac_customer_receivable"/>
+    </record>
+
+    <record id="group_ac_customer_receivable_administrator" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="module_category_ac_customer_receivable"/>
+        <field name="implied_ids" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+    </record>
+
+    <!-- Customer Master: company_id must be in user's allowed companies -->
+
+    <record id="ac_customer_master_rule_staff" model="ir.rule">
+        <field name="name">Customer Master: Staff multi-company</field>
+        <field name="model_id" ref="model_ac_customer_master"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_customer_master_rule_administrator" model="ir.rule">
+        <field name="name">Customer Master: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_master"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Service Engagement: company_id must be in user's allowed companies -->
+
+    <record id="ac_customer_job_rule_staff" model="ir.rule">
+        <field name="name">Service Engagement: Staff multi-company and ownership</field>
+        <field name="model_id" ref="model_ac_customer_job"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['&amp;', ('company_id', 'in', company_ids), '|', ('create_uid', '=', user.id), ('assigned_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ac_customer_job_rule_administrator" model="ir.rule">
+        <field name="name">Service Engagement: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_job"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Service Master: shared when no companies set, otherwise linked companies only -->
+
+    <record id="ac_service_rule_staff" model="ir.rule">
+        <field name="name">Service: Staff multi-company</field>
+        <field name="model_id" ref="model_ac_service"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['|', ('company_ids', '=', False), ('company_ids', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_service_rule_administrator" model="ir.rule">
+        <field name="name">Service: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_service"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">['|', ('company_ids', '=', False), ('company_ids', 'in', company_ids)]</field>
+    </record>
+
+    <!-- Service Engagement Lines: follow parent job company -->
+
+    <record id="ac_customer_job_line_rule_staff" model="ir.rule">
+        <field name="name">Service Engagement Line: Staff multi-company and ownership</field>
+        <field name="model_id" ref="model_ac_customer_job_line"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['&amp;', ('company_id', 'in', company_ids), '|', ('job_id.create_uid', '=', user.id), ('job_id.assigned_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ac_customer_job_line_rule_administrator" model="ir.rule">
+        <field name="name">Service Engagement Line: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_job_line"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <!--
+        AC Administrators can manage module users, but only super admins (uid 1, 2)
+        may see/edit other Administrator users. Everyone else sees Staff (+ themselves).
+    -->
+    <record id="res_users_rule_ac_administrator" model="ir.rule">
+        <field name="name">Users: hide Administrators except for super admins</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">user.id in (1, 2) and ['|', ('groups_id', 'in', [user.env.ref('ac_customer_receivable.group_ac_customer_receivable_staff').id]), ('groups_id', 'in', [user.env.ref('ac_customer_receivable.group_ac_customer_receivable_administrator').id])] or ['|', ('id', '=', user.id), '&amp;', ('groups_id', 'in', [user.env.ref('ac_customer_receivable.group_ac_customer_receivable_staff').id]), ('groups_id', 'not in', [user.env.ref('ac_customer_receivable.group_ac_customer_receivable_administrator').id])]</field>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <record id="ac_customer_job_state_log_rule_staff" model="ir.rule">
+        <field name="name">Service Engagement State Log: Staff multi-company and ownership</field>
+        <field name="model_id" ref="model_ac_customer_job_state_log"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['&amp;', ('job_id.company_id', 'in', company_ids), '|', ('job_id.create_uid', '=', user.id), ('job_id.assigned_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ac_customer_job_state_log_rule_administrator" model="ir.rule">
+        <field name="name">Service Engagement State Log: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_job_state_log"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('job_id.company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_customer_job_payment_rule_staff" model="ir.rule">
+        <field name="name">Service Engagement Payment: Staff multi-company and ownership</field>
+        <field name="model_id" ref="model_ac_customer_job_payment"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['&amp;', ('company_id', 'in', company_ids), '|', ('job_id.create_uid', '=', user.id), ('job_id.assigned_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ac_customer_job_payment_rule_administrator" model="ir.rule">
+        <field name="name">Service Engagement Payment: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_job_payment"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_customer_statement_line_rule_staff" model="ir.rule">
+        <field name="name">Customer Statement: Staff multi-company</field>
+        <field name="model_id" ref="model_ac_customer_statement_line"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_customer_statement_line_rule_administrator" model="ir.rule">
+        <field name="name">Customer Statement: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_statement_line"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ac_customer_job_refund_rule_staff" model="ir.rule">
+        <field name="name">Service Engagement Refund: Staff multi-company and ownership</field>
+        <field name="model_id" ref="model_ac_customer_job_refund"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_staff'))]"/>
+        <field name="domain_force">['&amp;', ('company_id', 'in', company_ids), '|', ('job_id.create_uid', '=', user.id), ('job_id.assigned_user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="ac_customer_job_refund_rule_administrator" model="ir.rule">
+        <field name="name">Service Engagement Refund: Administrator multi-company</field>
+        <field name="model_id" ref="model_ac_customer_job_refund"/>
+        <field name="groups" eval="[(4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+</odoo>

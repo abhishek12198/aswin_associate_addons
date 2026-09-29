@@ -1,0 +1,11 @@
+/* Hide one2many "Add a line" / delete / handle while form is in view mode */
+.o_form_view.o_form_readonly .o_field_one2many .o_field_x2many_list_row_add,
+.o_form_view.o_form_readonly .o_field_one2many .o_list_record_add {
+    display: none !important;
+}
+
+.o_form_view.o_form_readonly .o_field_one2many .o_list_record_remove,
+.o_form_view.o_form_readonly .o_field_one2many .o_row_handle {
+    visibility: hidden !important;
+    pointer-events: none !important;
+}

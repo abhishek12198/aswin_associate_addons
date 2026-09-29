@@ -1,0 +1,80 @@
+// ─── List View ───────────────────────────────────────────────────────────────
+
+.o_list_view {
+    font-family: $font-family-sans-serif;
+
+    thead > tr > th {
+        background: $ac-navy-dark;
+        color: white;
+        font-family: $font-family-sans-serif;
+        font-weight: 700;
+        font-size: 0.82rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        border-color: rgba(255, 255, 255, 0.12);
+        padding: 10px 8px;
+    }
+
+    tbody > tr {
+        font-size: 0.95rem;
+        transition: background 0.15s;
+
+        > td {
+            border-color: rgba(12, 31, 77, 0.06);
+            font-family: $font-family-sans-serif;
+            font-weight: 500;
+            background: #ffffff;
+        }
+
+        &:hover > td {
+            background: rgba(43, 89, 195, 0.06);
+        }
+
+        &.o_data_row_selected > td {
+            background: rgba(43, 89, 195, 0.12);
+        }
+    }
+
+    tfoot > tr > td {
+        background: $ac-navy-dark;
+        color: $ac-text-light;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .o_col_optional_columns_dropdown .dropdown-item {
+        font-family: $font-family-sans-serif;
+        font-size: 0.95rem;
+    }
+}
+
+@include media-breakpoint-only(md) {
+    .o_list_view {
+        thead > tr > th { padding: 8px 6px; font-size: 0.8rem; }
+        tbody > tr      { font-size: 0.9rem; }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .o_list_renderer,
+    .o_list_view .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .o_list_view {
+        thead > tr > th {
+            padding: 6px 4px;
+            font-size: 0.82rem;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+
+        tbody > tr {
+            font-size: 0.95rem;
+            > td { padding: 6px 4px; }
+        }
+
+        tfoot > tr > td { padding: 6px 4px; font-size: 0.95rem; }
+    }
+}

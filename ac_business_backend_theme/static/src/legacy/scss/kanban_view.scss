@@ -1,0 +1,55 @@
+// ─── Kanban View ─────────────────────────────────────────────────────────────
+
+.o_kanban_view {
+    background: $ac-surface;
+    font-family: $font-family-sans-serif;
+
+    .o_kanban_header_title {
+        font-family: $font-family-sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $ac-navy-dark;
+    }
+
+    .o_kanban_group {
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 6px;
+
+        .o_kanban_header {
+            background: $ac-navy-dark;
+            border-radius: 6px 6px 0 0;
+            color: white;
+            padding: 8px 12px;
+
+            .o_kanban_header_title,
+            .o_column_title {
+                color: #ffffff !important;
+            }
+        }
+    }
+
+    .o_kanban_record {
+        border-radius: 6px;
+        border: 1px solid rgba(12, 31, 77, 0.1);
+        box-shadow: 0 1px 4px rgba(12, 31, 77, 0.07);
+        background: #ffffff;
+        font-family: $font-family-sans-serif;
+        transition: box-shadow 0.2s, transform 0.2s;
+
+        &:hover {
+            box-shadow: 0 4px 12px rgba(12, 31, 77, 0.14);
+            transform: translateY(-2px);
+        }
+
+        .o_field_widget {
+            font-family: $font-family-sans-serif;
+        }
+    }
+
+    .o_kanban_quick_add {
+        color: $ac-blue;
+        &:hover { color: $ac-navy; }
+    }
+}

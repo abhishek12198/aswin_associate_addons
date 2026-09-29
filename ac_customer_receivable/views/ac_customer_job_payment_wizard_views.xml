@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_customer_job_payment_wizard_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.job.payment.wizard.form</field>
+        <field name="model">ac.customer.job.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Record Payment">
+                <group>
+                    <field name="job_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <group>
+                        <field name="amount_total" widget="monetary"/>
+                        <field name="amount_paid" widget="monetary"/>
+                        <field name="amount_remaining" widget="monetary"/>
+                    </group>
+                    <group>
+                        <field name="payment_scope" widget="radio"/>
+                        <field name="payment_method"/>
+                        <field name="amount" widget="monetary"
+                               attrs="{'invisible': [('payment_scope', '!=', 'partial')], 'required': [('payment_scope', '=', 'partial')]}"/>
+                        <field name="transaction_id"
+                               attrs="{'invisible': [('payment_method', '!=', 'upi')], 'required': [('payment_method', '=', 'upi')]}"/>
+                        <field name="upi_screenshot" widget="image" class="oe_avatar"
+                               filename="upi_screenshot_filename"
+                               options="{'size': [128, 128]}"
+                               attrs="{'invisible': [('payment_method', '!=', 'upi')]}"/>
+                        <field name="upi_screenshot_filename" invisible="1"/>
+                        <field name="cheque_ref"
+                               attrs="{'invisible': [('payment_method', '!=', 'cheque')], 'required': [('payment_method', '=', 'cheque')]}"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_payment_upi_screenshot_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.job.payment.upi.screenshot.form</field>
+        <field name="model">ac.customer.job.payment</field>
+        <field name="arch" type="xml">
+            <form string="UPI Screenshot" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <field name="name" readonly="1"/>
+                        <field name="payment_date" readonly="1"/>
+                        <field name="transaction_id" readonly="1"/>
+                        <field name="upi_screenshot_filename" invisible="1"/>
+                        <field name="upi_screenshot" widget="image" readonly="1"
+                               filename="upi_screenshot_filename"
+                               options="{'size': [400, 400]}"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string="Close" class="btn-primary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

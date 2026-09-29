@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="seq_ac_customer_job" model="ir.sequence">
+        <field name="name">Service Engagement</field>
+        <field name="code">ac.customer.job</field>
+        <field name="prefix">SE/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_ac_customer_job_payment" model="ir.sequence">
+        <field name="name">Payment Receipt</field>
+        <field name="code">ac.customer.job.payment</field>
+        <field name="prefix">RCP/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_ac_customer_job_refund" model="ir.sequence">
+        <field name="name">Refund</field>
+        <field name="code">ac.customer.job.refund</field>
+        <field name="prefix">REF/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_res_users_view_tree" model="ir.ui.view">
+        <field name="name">res.users.tree.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <tree string="Users">
+                <field name="name"/>
+                <field name="login"/>
+                <field name="ac_access_level"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_res_users_view_form" model="ir.ui.view">
+        <field name="name">res.users.form.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <form string="User">
+                <header>
+                    <button name="action_ac_change_password" string="Generate New Password" type="object"
+                            attrs="{'invisible': [('id', '=', False)]}"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="alert alert-info mb-3" role="alert"
+                         attrs="{'invisible': [('id', '!=', False)]}">
+                        A secure password will be generated automatically when you save this user.
+                        It will be shown on this form for 10 minutes — copy it before it disappears.
+                    </div>
+                    <div class="alert alert-warning mb-3" role="alert"
+                         attrs="{'invisible': [('ac_show_temp_password', '=', False)]}">
+                        <strong>Important:</strong>
+                        Copy this password now and share it securely with the user.
+                        It will disappear automatically after 10 minutes for security reasons.
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="User Name" required="1"/>
+                        </h1>
+                        <label for="login" string="Email / Login"/>
+                        <h2>
+                            <field name="login" placeholder="email@company.com" required="1"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group string="Access">
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="ac_can_manage_administrators" invisible="1"/>
+                            <field name="ac_access_level" widget="radio" options="{'horizontal': true}"
+                                   attrs="{'readonly': [('ac_can_manage_administrators', '=', False)]}"/>
+                        </group>
+                        <group string="Companies">
+                            <field name="company_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="company_id" string="Default Company" context="{'user_preference': 0}"/>
+                        </group>
+                    </group>
+                    <group string="Generated Password" attrs="{'invisible': [('ac_show_temp_password', '=', False)]}">
+                        <field name="ac_show_temp_password" invisible="1"/>
+                        <field name="ac_temp_password_expiry" invisible="1"/>
+                        <field name="ac_temp_password_display" readonly="1" widget="CopyClipboardChar"/>
+                    </group>
+                    <field name="email" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_res_users_view_search" model="ir.ui.view">
+        <field name="name">res.users.search.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="priority">50</field>
+        <field name="arch" type="xml">
+            <search string="Users">
+                <field name="name"/>
+                <field name="login"/>
+                <field name="company_id"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ac_change_password_wizard_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.receivable.change.password.wizard.form</field>
+        <field name="model">ac.customer.receivable.change.password.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate New Password">
+                <group>
+                    <field name="user_id" invisible="1"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    A new password will be generated automatically.
+                    It will be shown on the user form for 10 minutes.
+                    Copy it and share it securely with the user before it disappears.
+                </div>
+                <footer>
+                    <button name="action_generate_password" string="Generate New Password" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_res_users_action" model="ir.actions.act_window">
+        <field name="name">Users</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('ac_res_users_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('ac_res_users_view_form')})]"/>
+        <field name="search_view_id" ref="ac_res_users_view_search"/>
+        <field name="domain" eval="[]"/>
+        <field name="context">{'ac_customer_receivable_user_management': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new user
+            </p>
+            <p>
+                Manage Staff and Administrator users for Service Engagements.
+            </p>
+        </field>
+    </record>
+
+</odoo>

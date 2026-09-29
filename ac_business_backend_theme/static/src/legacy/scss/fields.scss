@@ -1,0 +1,127 @@
+// ─── Global field & form element overrides ───────────────────────────────────
+
+.btn-primary:not(.o_arrow_button) {
+    background: $ac-blue;
+    border-color: $ac-blue;
+    color: white;
+    font-family: $font-family-sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+
+    &:hover, &:focus, &:active {
+        background: darken($ac-blue, 8%);
+        border-color: darken($ac-blue, 8%);
+        color: white;
+    }
+}
+
+.btn-secondary:not(.o_arrow_button) {
+    font-family: $font-family-sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.btn.fa,
+.btn-primary.fa,
+.btn-secondary.fa {
+    font-family: FontAwesome !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    font-weight: normal !important;
+}
+
+.o_field_widget input,
+.o_field_widget select,
+.o_field_widget textarea {
+    font-family: $font-family-sans-serif;
+    font-size: 1rem;
+
+    &:focus {
+        border-color: $ac-blue;
+        box-shadow: 0 0 0 2px rgba(43, 89, 195, 0.2);
+    }
+}
+
+.badge.bg-primary   { background: $ac-blue    !important; }
+.badge.bg-secondary { background: $ac-navy    !important; }
+.badge.bg-warning   { background: #f59e0b     !important; color: #1f2937 !important; }
+
+.modal-content {
+    border-radius: 8px;
+    border: 1px solid rgba(12, 31, 77, 0.12);
+    box-shadow: 0 20px 60px rgba(12, 31, 77, 0.28);
+
+    .modal-header {
+        background: $ac-navy-dark;
+        color: #ffffff !important;
+        border-radius: 8px 8px 0 0;
+        border-bottom: 2px solid $ac-blue;
+        font-family: $font-family-sans-serif;
+
+        .modal-title,
+        .o_dialog_title,
+        h1, h2, h3, h4, h5, h6,
+        span {
+            color: #ffffff !important;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .btn-close,
+        .close {
+            color: #ffffff !important;
+            text-shadow: none;
+            filter: invert(1) brightness(2);
+            opacity: 1 !important;
+        }
+    }
+
+    .modal-footer {
+        border-top: 1px solid rgba(12, 31, 77, 0.08);
+    }
+}
+
+.o_dialog .modal-header,
+.o_technical_modal .modal-header,
+.o_act_window .modal-header,
+.modal .modal-header {
+    background: $ac-navy-dark;
+    color: #ffffff !important;
+
+    .modal-title,
+    .o_dialog_title,
+    h1, h2, h3, h4, h5, h6,
+    span {
+        color: #ffffff !important;
+    }
+
+    .btn-close,
+    .close {
+        color: #ffffff !important;
+        filter: invert(1) brightness(2);
+        opacity: 1 !important;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(12, 31, 77, 0.05);
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(43, 89, 195, 0.3);
+    border-radius: 3px;
+
+    &:hover { background: rgba(43, 89, 195, 0.5); }
+}
+
+.o_notification {
+    border-left: 4px solid $ac-blue;
+    font-family: $font-family-sans-serif;
+
+    &.o_notification_success { border-left-color: #22c55e; }
+    &.o_notification_danger   { border-left-color: #ef4444; }
+    &.o_notification_warning  { border-left-color: #f59e0b; }
+}

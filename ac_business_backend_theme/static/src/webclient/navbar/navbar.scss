@@ -1,0 +1,173 @@
+// ─── Main Navbar ─────────────────────────────────────────────────────────────
+
+.o_main_navbar {
+    background: linear-gradient(135deg, $ac-navy-dark 0%, $ac-navy 100%);
+    border-bottom: 1px solid $ac-border-soft;
+    box-shadow: 0 2px 10px rgba(12, 31, 77, 0.35);
+    color: $ac-text-light;
+
+    a, button {
+        color: $ac-text-light;
+        &:hover { color: white; }
+    }
+
+    .o_menu_brand {
+        font-family: $font-family-sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $ac-accent;
+
+        &:hover { color: $ac-accent-soft; }
+    }
+
+    .o_menu_sections {
+        .o_nav_entry,
+        .o_dropdown > .dropdown-toggle {
+            font-family: $font-family-sans-serif;
+            font-weight: 600;
+            font-size: 0.92rem;
+            letter-spacing: 0.02em;
+            color: $ac-text-light;
+            padding: 0 10px;
+            transition: color 0.2s;
+
+            &:hover { color: white; }
+        }
+    }
+
+    .o_menu_systray {
+        gap: 4px;
+
+        > * > .dropdown-toggle {
+            color: $ac-text-light;
+            padding: 0 12px;
+            &:hover { color: white; }
+        }
+
+        .dropdown-menu {
+            z-index: 1050 !important;
+        }
+    }
+
+    .o_debug_manager > .dropdown-toggle {
+        color: rgba(255, 255, 255, 0.55);
+        &:hover { color: white; }
+    }
+}
+
+.ac-navbar-logo {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    text-decoration: none;
+    flex-shrink: 0;
+
+    .ac-navbar-logo-img {
+        height: 32px;
+        width: auto;
+        max-width: 180px;
+        object-fit: contain;
+        filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+        transition: filter 0.25s, transform 0.25s;
+    }
+
+    &:hover .ac-navbar-logo-img {
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.45));
+        transform: scale(1.03);
+    }
+}
+
+@include media-breakpoint-only(md) {
+    .o_main_navbar {
+        .o_menu_brand { font-size: 0.85rem; }
+
+        .o_menu_sections {
+            .o_nav_entry,
+            .o_dropdown > .dropdown-toggle {
+                font-size: 0.85rem;
+                padding: 0 6px;
+            }
+        }
+
+        .o_menu_systray > * > .dropdown-toggle {
+            padding: 0 8px;
+        }
+
+        .ac-navbar-logo .ac-navbar-logo-img {
+            height: 22px;
+        }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .o_main_navbar {
+        grid-template-areas: "apps brand systray sections";
+        grid-template-columns: minmax($o-navbar-height, max-content) max-content auto minmax($o-navbar-height, max-content);
+
+        .o_menu_brand  { display: none; }
+        .ac-navbar-logo { display: none; }
+
+        .o_menu_sections {
+            width: $o-navbar-height;
+        }
+        .o_menu_sections_more .dropdown-toggle {
+            font-size: 1.2rem;
+        }
+        .o_menu_systray {
+            margin-left: auto;
+
+            > * > .dropdown-toggle {
+                min-width: 44px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 10px;
+            }
+        }
+        .o_user_menu > .dropdown-toggle {
+            white-space: nowrap;
+            &::before, &::after { content: normal; }
+            .oe_topbar_name { display: none; }
+        }
+        .show .dropdown-menu {
+            @include ac-full-screen-menu();
+            font-size: 1.05rem;
+
+            .dropdown-item {
+                font-size: 1.05rem;
+                padding: 14px 20px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            }
+        }
+    }
+}
+
+.o_main_navbar .dropdown-menu {
+    background: darken($ac-navy-dark, 2%);
+    border: 1px solid $ac-border-soft;
+    box-shadow: 0 8px 24px rgba(12, 31, 77, 0.45);
+
+    .dropdown-item {
+        color: $ac-text-light;
+        font-family: $font-family-sans-serif;
+        font-weight: 500;
+        font-size: 0.95rem;
+
+        &:hover, &:focus {
+            background: rgba(43, 89, 195, 0.45);
+            color: white;
+        }
+
+        &.active, &:active {
+            background: $ac-blue;
+            color: white;
+        }
+    }
+
+    .dropdown-divider {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+}

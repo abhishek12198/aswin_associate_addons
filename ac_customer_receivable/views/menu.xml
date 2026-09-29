@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_ac_service_engagements_root"
+              name="Service Engagements"
+              web_icon="ac_customer_receivable,static/description/icon.png"
+              sequence="25"
+              groups="ac_customer_receivable.group_ac_customer_receivable_staff,ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_customer_job"
+              name="Service Engagements"
+              parent="menu_ac_service_engagements_root"
+              action="ac_customer_job_action"
+              sequence="10"
+              groups="ac_customer_receivable.group_ac_customer_receivable_staff,ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_customer_master"
+              name="Customers"
+              parent="menu_ac_service_engagements_root"
+              action="ac_customer_master_action"
+              sequence="15"
+              groups="ac_customer_receivable.group_ac_customer_receivable_staff,ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_service"
+              name="Services"
+              parent="menu_ac_service_engagements_root"
+              action="ac_service_action"
+              sequence="16"
+              groups="ac_customer_receivable.group_ac_customer_receivable_staff,ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_customer_refund"
+              name="Refunds"
+              parent="menu_ac_service_engagements_root"
+              action="ac_customer_job_refund_action"
+              sequence="20"
+              groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_configuration"
+              name="Configuration"
+              parent="menu_ac_service_engagements_root"
+              sequence="90"
+              groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_customer_statement"
+              name="Customer Statements"
+              parent="menu_ac_configuration"
+              action="ac_customer_statement_line_action"
+              sequence="15"
+              groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_customer_import"
+              name="Import Customers"
+              parent="menu_ac_configuration"
+              action="ac_customer_import_wizard_action"
+              sequence="16"
+              groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+    <menuitem id="menu_ac_users"
+              name="Users"
+              parent="menu_ac_configuration"
+              action="ac_res_users_action"
+              sequence="30"
+              groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+
+</odoo>

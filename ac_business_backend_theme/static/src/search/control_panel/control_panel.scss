@@ -1,0 +1,392 @@
+// ─── Control Panel ───────────────────────────────────────────────────────────
+
+.o_control_panel {
+    background: linear-gradient(135deg, $ac-navy-dark 0%, $ac-navy 100%) !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 3px 12px rgba(12, 31, 77, 0.3);
+
+    .breadcrumb {
+        background: transparent !important;
+        margin-bottom: 0;
+        padding: 0;
+        align-items: center;
+        --bs-breadcrumb-divider-color: rgba(255, 255, 255, 0.4);
+        --bs-breadcrumb-item-padding-x: 0.5rem;
+        --bs-breadcrumb-item-active-color: #ffffff;
+    }
+
+    .breadcrumb-item,
+    .breadcrumb-item .o_back_button {
+        font-family: $font-family-sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        color: white;
+
+        a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.2s;
+            &:hover { color: $ac-accent-soft; }
+        }
+
+        + .breadcrumb-item::before {
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        &.o_back_button a::before {
+            content: '‹ ';
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 1.1em;
+            font-weight: 400;
+        }
+    }
+
+    .breadcrumb-item:not(.active) {
+        max-width: 28vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .breadcrumb-item.active {
+        font-family: $font-family-sans-serif;
+        font-weight: 700;
+        font-size: 1.1rem !important;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: #ffffff !important;
+        border-bottom: 2px solid white;
+        padding-bottom: 1px;
+        line-height: 1.3;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .o_cp_top,
+    .o_control_panel_main {
+        min-width: 0;
+    }
+    .o_cp_top_left,
+    .o_control_panel_breadcrumbs {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+    .breadcrumb {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        flex-wrap: nowrap;
+    }
+    .o_cp_top_right,
+    .o_control_panel_navigation {
+        flex: 1 1 240px;
+        min-width: 220px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .o_searchview {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.08) !important;
+        color: $ac-text-light;
+        min-width: 0;
+        width: 100%;
+
+        &:focus-within {
+            border-color: white;
+            background: rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .o_searchview_input {
+            background: transparent !important;
+            color: white !important;
+            font-family: $font-family-sans-serif;
+            font-size: 0.95rem;
+
+            &::placeholder { color: $ac-text-muted; }
+        }
+
+        .o_searchview_facet {
+            background: rgba(43, 89, 195, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: $ac-text-light;
+            font-family: $font-family-sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+    }
+
+    .o_cp_buttons {
+        .btn-primary {
+            background: white;
+            border-color: white;
+            color: $ac-navy-dark;
+            font-family: $font-family-sans-serif;
+            font-weight: 700;
+
+            &:hover, &:focus {
+                background: $ac-accent-soft;
+                border-color: $ac-accent-soft;
+                color: $ac-navy-dark;
+            }
+        }
+
+        .btn-secondary {
+            background: rgba(43, 89, 195, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: $ac-text-light;
+            font-family: $font-family-sans-serif;
+            font-weight: 600;
+
+            &:hover, &:focus {
+                background: rgba(43, 89, 195, 0.55);
+                color: white;
+            }
+        }
+    }
+
+    .o_cp_switch_buttons .btn {
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: $ac-text-muted;
+
+        &.active, &:hover {
+            background: rgba(43, 89, 195, 0.45);
+            border-color: white;
+            color: white;
+        }
+    }
+
+    .o_pager {
+        color: $ac-text-light;
+        font-weight: 600;
+
+        .o_pager_counter {
+            font-family: $font-family-sans-serif;
+        }
+
+        .o_pager_previous,
+        .o_pager_next {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+            color: $ac-text-light !important;
+
+            &:hover {
+                background: rgba(43, 89, 195, 0.5) !important;
+                border-color: white !important;
+                color: white !important;
+            }
+
+            &:disabled, &[disabled] {
+                background: rgba(255, 255, 255, 0.05) !important;
+                border-color: rgba(255, 255, 255, 0.1) !important;
+                color: $ac-text-muted !important;
+            }
+        }
+
+        .o_pager_value {
+            color: $ac-text-light;
+        }
+
+        input.o_pager_value {
+            color: $ac-navy-dark !important;
+            background: #ffffff !important;
+            border: 1px solid $ac-blue !important;
+            border-radius: 4px !important;
+            padding: 2px 6px !important;
+            font-weight: 700 !important;
+        }
+    }
+}
+
+@include media-breakpoint-down(lg) {
+    .o_control_panel {
+        .o_cp_top,
+        .o_control_panel_main {
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .o_cp_top_left,
+        .o_control_panel_breadcrumbs {
+            flex: 1 1 100%;
+            max-width: 100%;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .o_cp_top_right {
+            flex: 1 1 100%;
+            min-width: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .o_cp_bottom {
+            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        .o_cp_bottom_right {
+            flex: 1 1 100%;
+            width: 100%;
+            min-width: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 8px;
+        }
+        .o_search_options {
+            flex: 1 1 100%;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 6px;
+            margin-left: 0;
+        }
+
+        .o_searchview,
+        .o_searchview_quick,
+        .o_searchview_mobile {
+            flex: 1 1 auto;
+            width: 100%;
+            min-width: 0;
+            min-height: 40px;
+        }
+
+        .o_searchview_input_container {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .o_searchview_input {
+            min-width: 8rem !important;
+            flex: 1 1 auto;
+        }
+
+        .breadcrumb-item.active {
+            font-size: 1rem !important;
+        }
+
+        .o_cp_buttons .btn { padding: 4px 10px; font-size: 0.88rem; }
+    }
+}
+
+@include media-breakpoint-down(sm) {
+    .o_control_panel {
+        padding: 8px 10px !important;
+        overflow: visible;
+
+        .breadcrumb-item {
+            &:nth-last-of-type(n+3) {
+                display: none !important;
+            }
+
+            &:nth-last-of-type(2) {
+                flex: 0 0 auto;
+                max-width: none;
+                padding-right: 4px;
+
+                &::before {
+                    content: none !important;
+                    padding: 0;
+                }
+
+                a {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-width: 40px;
+                    min-height: 40px;
+                    font-size: 0;
+                    line-height: 0;
+                    color: white;
+
+                    &::before {
+                        content: '\f053';
+                        font-family: FontAwesome, 'FontAwesome';
+                        font-size: 16px;
+                        font-weight: 400;
+                        color: white;
+                        line-height: 1;
+                    }
+                }
+            }
+
+            &.o_back_button a::before {
+                content: '\f053';
+                font-family: FontAwesome, 'FontAwesome';
+                font-size: 16px;
+            }
+        }
+
+        .breadcrumb-item,
+        .breadcrumb-item .o_back_button {
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+        }
+
+        .breadcrumb-item.active {
+            flex: 1 1 auto;
+            min-width: 0;
+            max-width: none;
+            font-size: 0.95rem !important;
+            letter-spacing: 0.02em;
+            text-transform: none;
+            border-bottom-width: 1px;
+        }
+
+        .o_searchview_autocomplete {
+            left: 0;
+            right: 0;
+            z-index: 1055;
+        }
+
+        .o_cp_bottom {
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        .o_cp_bottom_left,
+        .o_cp_bottom_right {
+            width: 100%;
+            flex: 1 1 auto;
+            justify-content: flex-start;
+        }
+
+        .o_cp_switch_buttons,
+        .o_control_panel_navigation {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 6px;
+        }
+
+        .o_pager { font-size: 0.95rem; }
+
+        .o_cp_buttons {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            .btn { flex: 1 1 auto; font-size: 0.95rem; padding: 6px 10px; }
+        }
+
+        .o_cp_switch_buttons .btn { padding: 6px 8px; }
+    }
+}

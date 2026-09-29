@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_customer_job_refund_wizard_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.job.refund.wizard.form</field>
+        <field name="model">ac.customer.job.refund.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Request Refund">
+                <group>
+                    <field name="job_id" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <group>
+                        <field name="amount_paid" widget="monetary"/>
+                        <field name="amount_refunded" widget="monetary"/>
+                        <field name="amount_refundable" widget="monetary"/>
+                    </group>
+                    <group>
+                        <field name="refund_scope" widget="radio"/>
+                        <field name="payment_method"/>
+                        <field name="amount" widget="monetary"
+                               attrs="{'invisible': [('refund_scope', '!=', 'partial')], 'required': [('refund_scope', '=', 'partial')]}"/>
+                        <field name="transaction_id"
+                               attrs="{'invisible': [('payment_method', '!=', 'upi')], 'required': [('payment_method', '=', 'upi')]}"/>
+                        <field name="cheque_ref"
+                               attrs="{'invisible': [('payment_method', '!=', 'cheque')], 'required': [('payment_method', '=', 'cheque')]}"/>
+                        <field name="notes"/>
+                    </group>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    This refund will be submitted for Administrator approval.
+                    After approval, a debit counter entry is posted on the customer statement.
+                </div>
+                <footer>
+                    <button name="action_confirm" string="Submit for Approval" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_refund_view_tree" model="ir.ui.view">
+        <field name="name">ac.customer.job.refund.tree</field>
+        <field name="model">ac.customer.job.refund</field>
+        <field name="arch" type="xml">
+            <tree string="Refunds" create="0" delete="0"
+                  decoration-warning="state == 'waiting_approval'"
+                  decoration-success="state == 'approved'"
+                  decoration-muted="state == 'rejected'">
+                <field name="name"/>
+                <field name="request_date"/>
+                <field name="job_id"/>
+                <field name="customer_id"/>
+                <field name="payment_method"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="amount" widget="monetary" sum="Total"/>
+                <field name="requested_by"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'waiting_approval'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"/>
+                <button name="action_approve" string="Approve" type="object"
+                        icon="fa-check"
+                        groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                        attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+                <button name="action_reject" string="Reject" type="object"
+                        icon="fa-times"
+                        groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                        attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_refund_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.job.refund.form</field>
+        <field name="model">ac.customer.job.refund</field>
+        <field name="arch" type="xml">
+            <form string="Refund" create="0" delete="0">
+                <header>
+                    <button name="action_approve" string="Approve Refund" type="object"
+                            class="btn-primary"
+                            groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                            confirm="Approve this refund and post the statement counter entry?"
+                            attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+                    <button name="action_reject" string="Reject" type="object"
+                            groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                            confirm="Reject this refund request?"
+                            attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="waiting_approval,approved,rejected"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="job_id" readonly="1"/>
+                            <field name="customer_id" readonly="1"/>
+                            <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                        </group>
+                        <group>
+                            <field name="request_date" readonly="1"/>
+                            <field name="refund_scope" readonly="1"/>
+                            <field name="payment_method" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount" widget="monetary" readonly="1"/>
+                            <field name="transaction_id" readonly="1"/>
+                            <field name="cheque_ref" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Request">
+                            <field name="requested_by" readonly="1"/>
+                            <field name="notes" readonly="1"/>
+                        </group>
+                        <group string="Approval">
+                            <field name="approved_by" readonly="1"/>
+                            <field name="approved_date" readonly="1"/>
+                            <field name="rejected_by" readonly="1"/>
+                            <field name="rejected_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_refund_view_search" model="ir.ui.view">
+        <field name="name">ac.customer.job.refund.search</field>
+        <field name="model">ac.customer.job.refund</field>
+        <field name="arch" type="xml">
+            <search string="Refunds">
+                <field name="name"/>
+                <field name="job_id"/>
+                <field name="customer_id"/>
+                <filter string="Waiting Approval" name="waiting_approval" domain="[('state', '=', 'waiting_approval')]"/>
+                <filter string="Approved" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Rejected" name="rejected" domain="[('state', '=', 'rejected')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_refund_action" model="ir.actions.act_window">
+        <field name="name">Refunds</field>
+        <field name="res_model">ac.customer.job.refund</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="ac_customer_job_refund_view_search"/>
+        <field name="context">{'search_default_waiting_approval': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No refunds yet
+            </p>
+            <p>
+                Refunds are requested from declined engagements that have received payments.
+            </p>
+        </field>
+    </record>
+
+</odoo>

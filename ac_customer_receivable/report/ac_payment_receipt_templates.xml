@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_ac_payment_receipt_document">
+        <t t-set="company" t-value="o.company_id"/>
+        <t t-set="customer" t-value="o._get_customer()"/>
+        <t t-set="job" t-value="o.job_id"/>
+        <t t-set="address_lines" t-value="o._get_customer_address_lines()"/>
+        <t t-set="company_address_lines" t-value="o._get_company_address_lines()"/>
+        <div class="page ac-receipt-page">
+            <style>
+                .ac-receipt-page {
+                    color: #1f3a5f;
+                    background: #ffffff;
+                    font-family: "Lato", "DejaVu Sans", "Liberation Sans", sans-serif;
+                    font-size: 11px;
+                    line-height: 1.35;
+                }
+                .ac-receipt-header {
+                    width: 100%;
+                    background: #e8f2fb;
+                    border-bottom: 2px solid #8ec0e6;
+                    padding: 10px 12px;
+                    margin-bottom: 10px;
+                }
+                .ac-receipt-logo {
+                    max-height: 62px;
+                    max-width: 170px;
+                }
+                .ac-company-name {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #1f5f8b;
+                    letter-spacing: 0.2px;
+                    margin: 0 0 2px 0;
+                }
+                .ac-company-meta {
+                    color: #3d6b8a;
+                    font-size: 10px;
+                    margin: 0;
+                }
+                .ac-receipt-title-wrap {
+                    text-align: right;
+                }
+                .ac-receipt-kicker {
+                    font-size: 9px;
+                    letter-spacing: 1.8px;
+                    text-transform: uppercase;
+                    color: #4f8bb3;
+                    margin: 0 0 2px 0;
+                }
+                .ac-receipt-title {
+                    font-size: 22px;
+                    font-weight: 700;
+                    color: #1f5f8b;
+                    margin: 0;
+                }
+                .ac-receipt-no {
+                    font-size: 11px;
+                    color: #1f5f8b;
+                    font-weight: 700;
+                    margin: 4px 0 0 0;
+                }
+                .ac-section-title {
+                    font-size: 9px;
+                    letter-spacing: 1.4px;
+                    text-transform: uppercase;
+                    color: #1f5f8b;
+                    font-weight: 700;
+                    border-bottom: 1px solid #c5dff0;
+                    padding-bottom: 3px;
+                    margin: 0 0 8px 0;
+                }
+                .ac-label {
+                    color: #4f8bb3;
+                    width: 92px;
+                    vertical-align: top;
+                    padding: 2px 8px 2px 0;
+                    white-space: nowrap;
+                }
+                .ac-value {
+                    color: #1f3a5f;
+                    font-weight: 600;
+                    vertical-align: top;
+                    padding: 2px 0;
+                }
+                .ac-amount-box {
+                    background: #e8f2fb;
+                    color: #1f5f8b;
+                    border: 1px solid #8ec0e6;
+                    padding: 10px 14px;
+                }
+                .ac-amount-box .ac-label,
+                .ac-amount-box .ac-value {
+                    color: #1f5f8b;
+                    padding-top: 1px;
+                    padding-bottom: 1px;
+                }
+                .ac-amount-figure {
+                    font-size: 22px;
+                    font-weight: 700;
+                    letter-spacing: 0.3px;
+                    color: #1f5f8b;
+                }
+                .ac-words {
+                    font-style: italic;
+                    font-weight: 500;
+                    font-size: 10.5px;
+                    color: #1f5f8b;
+                }
+                .ac-summary-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background: #ffffff;
+                }
+                .ac-summary-table th {
+                    background: #d7ebf8;
+                    color: #1f5f8b;
+                    font-size: 9px;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    padding: 6px 8px;
+                    border-bottom: 1px solid #8ec0e6;
+                }
+                .ac-summary-table td {
+                    background: #ffffff;
+                    color: #1f3a5f;
+                    border-bottom: 1px solid #d7ebf8;
+                    padding: 5px 8px;
+                }
+                .ac-summary-table .text-right {
+                    text-align: right;
+                }
+                .ac-sign-box {
+                    height: 42px;
+                    border-bottom: 1px solid #8ec0e6;
+                    margin-bottom: 6px;
+                }
+                .ac-sign-label {
+                    font-size: 9px;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    color: #1f5f8b;
+                    font-weight: 700;
+                }
+                .ac-receipt-footer {
+                    margin-top: 10px;
+                    padding: 8px 12px;
+                    background: #e8f2fb;
+                    border-top: 2px solid #8ec0e6;
+                    color: #3d6b8a;
+                    font-size: 9.5px;
+                }
+                .ac-footer-company {
+                    font-weight: 700;
+                    color: #1f5f8b;
+                    font-size: 10.5px;
+                }
+                .ac-footer-note {
+                    font-size: 8.5px;
+                    color: #4f8bb3;
+                    margin-top: 4px;
+                }
+            </style>
+
+            <table class="ac-receipt-header" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td width="18%" valign="middle" style="padding-right: 12px;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="ac-receipt-logo"/>
+                    </td>
+                    <td width="47%" valign="middle">
+                        <p class="ac-company-name"><span t-field="company.name"/></p>
+                        <p class="ac-company-meta">
+                            <t t-foreach="company_address_lines" t-as="line">
+                                <span t-esc="line"/><t t-if="not line_last">, </t>
+                            </t>
+                        </p>
+                        <p class="ac-company-meta">
+                            <t t-if="company.phone">Tel: <span t-field="company.phone"/></t>
+                            <t t-if="company.phone and company.email"> | </t>
+                            <t t-if="company.email"><span t-field="company.email"/></t>
+                            <t t-if="(company.phone or company.email) and company.website"> | </t>
+                            <t t-if="company.website"><span t-field="company.website"/></t>
+                        </p>
+                        <p t-if="company.vat" class="ac-company-meta">GSTIN / Tax ID: <span t-field="company.vat"/></p>
+                    </td>
+                    <td width="35%" valign="middle" class="ac-receipt-title-wrap">
+                        <p class="ac-receipt-kicker">Official Document</p>
+                        <p class="ac-receipt-title">PAYMENT RECEIPT</p>
+                        <p class="ac-receipt-no">No. <span t-esc="o.name or ('RCP/%s' % o.id)"/></p>
+                        <p class="ac-company-meta">
+                            Date:
+                            <span t-field="o.payment_date" t-options="{'widget': 'datetime', 'format': 'dd MMM yyyy, HH:mm'}"/>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                    <td width="49%" valign="top" style="padding-right: 12px;">
+                        <p class="ac-section-title">Received From</p>
+                        <table width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="ac-label">Customer</td>
+                                <td class="ac-value"><span t-field="customer.name"/></td>
+                            </tr>
+                            <tr t-if="customer.customer_company">
+                                <td class="ac-label">Company</td>
+                                <td class="ac-value"><span t-field="customer.customer_company"/></td>
+                            </tr>
+                            <tr t-if="address_lines">
+                                <td class="ac-label">Address</td>
+                                <td class="ac-value">
+                                    <t t-foreach="address_lines" t-as="line">
+                                        <span t-esc="line"/><br t-if="not line_last"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr t-if="customer.contact_number">
+                                <td class="ac-label">Contact</td>
+                                <td class="ac-value"><span t-field="customer.contact_number"/></td>
+                            </tr>
+                            <tr t-if="customer.email">
+                                <td class="ac-label">Email</td>
+                                <td class="ac-value"><span t-field="customer.email"/></td>
+                            </tr>
+                            <tr t-if="customer.pan_no">
+                                <td class="ac-label">PAN</td>
+                                <td class="ac-value"><span t-field="customer.pan_no"/></td>
+                            </tr>
+                            <tr t-if="customer.aadhar_no">
+                                <td class="ac-label">Aadhar</td>
+                                <td class="ac-value"><span t-field="customer.aadhar_no"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="2%"/>
+                    <td width="49%" valign="top" style="padding-left: 12px;">
+                        <p class="ac-section-title">Payment Details</p>
+                        <table width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="ac-label">Engagement</td>
+                                <td class="ac-value"><span t-field="job.name"/></td>
+                            </tr>
+                            <tr>
+                                <td class="ac-label">Method</td>
+                                <td class="ac-value"><span t-field="o.payment_method"/></td>
+                            </tr>
+                            <tr>
+                                <td class="ac-label">Type</td>
+                                <td class="ac-value"><span t-field="o.payment_scope"/></td>
+                            </tr>
+                            <tr t-if="o.transaction_id">
+                                <td class="ac-label">Txn ID</td>
+                                <td class="ac-value"><span t-field="o.transaction_id"/></td>
+                            </tr>
+                            <tr t-if="o.cheque_ref">
+                                <td class="ac-label">Cheque Ref</td>
+                                <td class="ac-value"><span t-field="o.cheque_ref"/></td>
+                            </tr>
+                            <tr>
+                                <td class="ac-label">Received By</td>
+                                <td class="ac-value"><span t-field="o.recorded_by"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 10px;">
+                <tr>
+                    <td class="ac-amount-box">
+                        <table width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td valign="middle">
+                                    <div style="font-size: 9px; letter-spacing: 1.4px; text-transform: uppercase; color: #4f8bb3;">Amount Received</div>
+                                    <div class="ac-amount-figure">
+                                        <span t-esc="o._format_report_amount(o.amount, o.currency_id)"/>
+                                    </div>
+                                </td>
+                                <td valign="middle" style="text-align: right;">
+                                    <div style="font-size: 9px; letter-spacing: 1.4px; text-transform: uppercase; color: #4f8bb3;">Amount in Words</div>
+                                    <div class="ac-words"><span t-esc="o._get_amount_in_words()"/></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <p class="ac-section-title">Engagement Summary</p>
+            <table class="ac-summary-table" style="margin-bottom: 10px;">
+                <thead>
+                    <tr>
+                        <th>Service Engagement</th>
+                        <th class="text-right">Grand Total</th>
+                        <th class="text-right">This Receipt</th>
+                        <th class="text-right">Paid To Date</th>
+                        <th class="text-right">Balance Due</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span t-field="job.name"/></td>
+                        <td class="text-right">
+                            <span t-esc="o._format_report_amount(job.amount_total, job.currency_id)"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-esc="o._format_report_amount(o.amount, o.currency_id)"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-esc="o._format_report_amount(job.amount_paid, job.currency_id)"/>
+                        </td>
+                        <td class="text-right">
+                            <span t-esc="o._format_report_amount(job.amount_remaining, job.currency_id)"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <t t-if="job.line_ids">
+                <p class="ac-section-title">Services</p>
+                <table class="ac-summary-table" style="margin-bottom: 12px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">#</th>
+                            <th>Service</th>
+                            <th>Description</th>
+                            <th class="text-right" style="width: 130px;">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="job.line_ids" t-as="line">
+                            <td><span t-field="line.slno"/></td>
+                            <td><span t-field="line.service_id"/></td>
+                            <td><span t-field="line.description"/></td>
+                            <td class="text-right">
+                                <span t-esc="o._format_report_amount(line.amount, line.currency_id)"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-top: 6px;">
+                <tr>
+                    <td width="46%" valign="top">
+                        <div class="ac-sign-box"/>
+                        <div class="ac-sign-label">Customer Acknowledgement</div>
+                    </td>
+                    <td width="8%"/>
+                    <td width="46%" valign="top">
+                        <div class="ac-sign-box"/>
+                        <div class="ac-sign-label">For <span t-field="company.name"/></div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="ac-receipt-footer">
+                <table width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td valign="top" width="70%">
+                            <div class="ac-footer-company"><span t-field="company.name"/></div>
+                            <div>
+                                <t t-foreach="company_address_lines" t-as="line">
+                                    <span t-esc="line"/><t t-if="not line_last">, </t>
+                                </t>
+                            </div>
+                            <div>
+                                <t t-if="company.phone"><span t-field="company.phone"/></t>
+                                <t t-if="company.phone and company.email"> · </t>
+                                <t t-if="company.email"><span t-field="company.email"/></t>
+                                <t t-if="company.website"> · <span t-field="company.website"/></t>
+                                <t t-if="company.vat"> · GSTIN / Tax ID: <span t-field="company.vat"/></t>
+                            </div>
+                            <div t-if="company.report_footer" t-field="company.report_footer"/>
+                        </td>
+                        <td valign="bottom" width="30%" style="text-align: right;">
+                            <div class="ac-footer-note">This is a computer-generated receipt.</div>
+                            <div class="ac-footer-note">No signature is required if issued digitally.</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </template>
+
+    <template id="report_ac_payment_receipt">
+        <t t-set="full_width" t-value="True"/>
+        <t t-call="web.report_layout">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="ac_customer_receivable.report_ac_payment_receipt_document"/>
+            </t>
+        </t>
+    </template>
+
+</odoo>

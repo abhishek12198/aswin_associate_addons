@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="webclient_google_fonts"
+              inherit_id="web.webclient_bootstrap"
+              name="AC Business Backend Theme Boot">
+        <xpath expr="//t[@t-set='head']" position="after">
+            <t t-set="head_ac_business_boot">
+                <t t-set="ac_company" t-value="request.env.company"/>
+                <t t-set="ac_app_title" t-value="request.env['ir.config_parameter'].sudo().get_param('ac.business.backend.title') or ac_company.name or 'Odoo'"/>
+                <script type="text/javascript">
+                    document.title = <t t-out="json.dumps(ac_app_title)"/>;
+                </script>
+                <link rel="icon" href="/ac_business_backend_theme/static/img/default_icon.svg" type="image/svg+xml"/>
+                <link rel="shortcut icon" href="/ac_business_backend_theme/static/img/default_icon.svg" type="image/svg+xml"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover"/>
+                <meta name="theme-color" content="#102a63"/>
+                <style id="ac-boot-critical">
+                    html { background: #102a63; }
+                    html.ac-booting { background: #102a63; color-scheme: dark; }
+                    body.o_web_client { margin: 0; background-color: #102a63; }
+                    #ac-boot-splash {
+                        position: fixed;
+                        inset: 0;
+                        z-index: 99999;
+                        opacity: 1;
+                        transition: opacity 0.12s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        pointer-events: none;
+                        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+                        background: linear-gradient(180deg, #0c1f4d 0%, #102a63 50%, #1a3a8a 100%);
+                    }
+                    #ac-boot-splash .ac-spin-track {
+                        position: relative;
+                        width: 88px;
+                        height: 88px;
+                        margin-bottom: 20px;
+                    }
+                    #ac-boot-splash .ac-spin-ring {
+                        position: absolute;
+                        inset: 0;
+                        border-radius: 50%;
+                        border: 3px solid rgba(255,255,255,0.12);
+                        border-top-color: #ffffff;
+                        animation: acBootSpinCW 0.75s linear infinite;
+                    }
+                    #ac-boot-splash .ac-spin-icon {
+                        position: absolute;
+                        inset: 14px;
+                        border-radius: 50%;
+                        background: #ffffff;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        overflow: hidden;
+                    }
+                    #ac-boot-splash .ac-spin-icon img {
+                        width: 68%;
+                        height: 68%;
+                        object-fit: contain;
+                    }
+                    #ac-boot-splash .ac-load-company {
+                        font-size: 1.1rem;
+                        font-weight: 700;
+                        color: #ffffff;
+                        text-align: center;
+                        margin-bottom: 10px;
+                        max-width: 80vw;
+                    }
+                    #ac-boot-splash .ac-load-msg {
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        color: rgba(255,255,255,0.75);
+                        text-align: center;
+                    }
+                    @keyframes acBootSpinCW { to { transform: rotate(360deg); } }
+                    #ac-boot-splash.ac-boot-gone { opacity: 0; }
+                </style>
+            </t>
+            <t t-set="head" t-value="head_ac_business_boot + (head or '')"/>
+        </xpath>
+
+        <xpath expr="//t[@t-set='body_classname']" position="after">
+            <t t-set="ac_company" t-value="request.env.company"/>
+            <div id="ac-boot-splash" aria-live="polite" aria-busy="true">
+                <div class="ac-spin-track">
+                    <div class="ac-spin-ring"></div>
+                    <div class="ac-spin-icon">
+                        <!-- Static SVG avoids a blocking /web/binary/company_logo round-trip on boot -->
+                        <img src="/ac_business_backend_theme/static/img/default_icon.svg"
+                             t-att-alt="ac_company.name"/>
+                    </div>
+                </div>
+                <div class="ac-load-company" t-esc="ac_company.name"/>
+                <div class="ac-load-msg">Loading...</div>
+            </div>
+            <script>
+                (function () {
+                    var root = document.documentElement;
+                    root.classList.add('ac-booting');
+                    var splash = document.getElementById('ac-boot-splash');
+                    if (splash &amp;&amp; splash.parentNode !== root) {
+                        root.appendChild(splash);
+                    }
+                    // Absolute cap from first HTML paint — never leave the splash
+                    // up while assets download for tens of seconds.
+                    function forceDismiss() {
+                        var el = document.getElementById('ac-boot-splash');
+                        if (!el) { return; }
+                        el.classList.add('ac-boot-gone');
+                        setTimeout(function () {
+                            if (el.parentNode) { el.parentNode.removeChild(el); }
+                            var critical = document.getElementById('ac-boot-critical');
+                            if (critical &amp;&amp; critical.parentNode) {
+                                critical.parentNode.removeChild(critical);
+                            }
+                            root.classList.remove('ac-booting');
+                        }, 120);
+                    }
+                    setTimeout(forceDismiss, 4000);
+                    if (document.querySelector('.o_main_navbar')) {
+                        forceDismiss();
+                    }
+                })();
+            </script>
+        </xpath>
+    </template>
+
+    <template id="web_layout_branding"
+              inherit_id="web.layout"
+              name="AC Business Web Layout Branding">
+        <xpath expr="//title" position="replace">
+            <title t-esc="title or request.env['ir.config_parameter'].sudo().get_param('ac.business.backend.title') or request.env.company.name or 'Odoo'"/>
+        </xpath>
+        <xpath expr="//link[@rel='shortcut icon']" position="replace">
+            <link rel="icon"
+                  href="/ac_business_backend_theme/static/img/default_icon.svg"
+                  type="image/svg+xml"/>
+            <link rel="shortcut icon"
+                  href="/ac_business_backend_theme/static/img/default_icon.svg"
+                  type="image/svg+xml"/>
+        </xpath>
+    </template>
+
+    <template id="webclient_bootstrap_title"
+              inherit_id="web.webclient_bootstrap"
+              name="AC Business Webclient Bootstrap Title">
+        <xpath expr="//t[@t-call='web.layout']" position="before">
+            <t t-set="title" t-value="request.env['ir.config_parameter'].sudo().get_param('ac.business.backend.title') or request.env.company.name or 'Odoo'"/>
+        </xpath>
+    </template>
+</odoo>

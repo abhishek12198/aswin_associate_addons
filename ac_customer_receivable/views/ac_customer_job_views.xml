@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_customer_job_view_tree" model="ir.ui.view">
+        <field name="name">ac.customer.job.tree</field>
+        <field name="model">ac.customer.job</field>
+        <field name="arch" type="xml">
+            <tree string="Service Engagements"
+                  decoration-muted="state == 'declined'"
+                  decoration-success="state == 'done'"
+                  decoration-info="state == 'in_progress'">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="customer_contact_number" string="Contact Number" widget="phone" options="{'enable_sms': false}"/>
+                <field name="assigned_user_id" optional="show"/>
+                <field name="created_by" optional="hide"/>
+                <field name="created_date" optional="hide"/>
+                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-muted="state == 'declined'"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'in_progress'"
+                       decoration-warning="state == 'started'"/>
+                <field name="payment_status" widget="badge"
+                       decoration-danger="payment_status == 'unpaid'"
+                       decoration-warning="payment_status == 'partial'"
+                       decoration-success="payment_status == 'paid'"/>
+                <field name="amount_total" widget="monetary" string="Total Amount" sum="Total Amount"/>
+                <field name="amount_paid" widget="monetary" string="Paid Amount" sum="Paid Amount"/>
+                <field name="amount_remaining" widget="monetary" string="Remaining Amount" sum="Remaining Amount"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="customer_email" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_view_kanban" model="ir.ui.view">
+        <field name="name">ac.customer.job.kanban</field>
+        <field name="model">ac.customer.job</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_ac_customer_job_kanban o_kanban_small_column"
+                    sample="1"
+                    quick_create="false">
+                <field name="name"/>
+                <field name="customer_id"/>
+                <field name="customer_name"/>
+                <field name="customer_contact_number"/>
+                <field name="customer_email"/>
+                <field name="state"/>
+                <field name="is_frozen"/>
+                <field name="state_progress"/>
+                <field name="payment_status"/>
+                <field name="payment_percent"/>
+                <field name="amount_paid"/>
+                <field name="amount_total"/>
+                <field name="currency_id"/>
+                <field name="active"/>
+                <progressbar field="state"
+                             colors='{"not_started": "muted", "started": "info", "in_progress": "warning", "done": "success", "declined": "danger"}'/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click o_ac_job_kanban_card #{record.is_frozen.raw_value ? 'o_ac_job_kanban_frozen' : ''} #{!record.active.raw_value ? 'o_kanban_record_muted' : ''}">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                    <span class="o_kanban_record_subtitle">
+                                        <field name="customer_name"/>
+                                    </span>
+                                </div>
+                                <div class="o_ac_job_state_badge">
+                                    <field name="state" widget="label_selection"
+                                           options="{'classes': {'not_started': 'secondary', 'started': 'info', 'in_progress': 'warning', 'done': 'success', 'declined': 'danger'}}"/>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_body o_ac_job_kanban_body">
+                                <ul class="o_ac_job_contact_list">
+                                    <li t-if="record.customer_contact_number.raw_value" class="o_ac_job_contact_item">
+                                        <span class="o_ac_job_contact_icon"><i class="fa fa-phone" title="Phone"/></span>
+                                        <span class="o_ac_job_contact_value">
+                                            <field name="customer_contact_number" widget="phone"
+                                                   options="{'enable_sms': false}"/>
+                                        </span>
+                                    </li>
+                                    <li t-if="record.customer_email.raw_value" class="o_ac_job_contact_item">
+                                        <span class="o_ac_job_contact_icon"><i class="fa fa-envelope-o" title="Email"/></span>
+                                        <span class="o_ac_job_contact_value">
+                                            <field name="customer_email" widget="email"/>
+                                        </span>
+                                    </li>
+                                </ul>
+
+                                <div class="o_ac_job_kanban_progress">
+                                    <div class="o_ac_job_progress_header">
+                                        <span class="o_ac_job_progress_label">Progress</span>
+                                        <span class="o_ac_job_progress_pct">
+                                            <t t-esc="record.state_progress.value"/>%
+                                        </span>
+                                    </div>
+                                    <div class="o_ac_job_progress_track">
+                                        <div class="o_ac_job_progress_fill"
+                                             t-attf-style="width: #{record.state_progress.value}%;"/>
+                                    </div>
+                                </div>
+
+                                <div class="o_ac_job_kanban_payment">
+                                    <div class="o_ac_job_progress_header">
+                                        <span class="o_ac_job_progress_label">Payment</span>
+                                        <span class="o_ac_job_payment_badge">
+                                            <field name="payment_status" widget="label_selection"
+                                                   options="{'classes': {'unpaid': 'danger', 'partial': 'warning', 'paid': 'success'}}"/>
+                                        </span>
+                                        <span t-attf-class="o_ac_job_progress_pct o_ac_job_payment_pct o_ac_job_payment_pct_#{record.payment_status.raw_value}">
+                                            <t t-esc="record.payment_percent.value"/>%
+                                        </span>
+                                    </div>
+                                    <div class="o_ac_job_progress_track o_ac_job_payment_track">
+                                        <div t-attf-class="o_ac_job_payment_fill o_ac_job_payment_fill_#{record.payment_status.raw_value}"
+                                             t-attf-style="width: #{record.payment_percent.value}%;"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="o_ac_job_amount_label">Total</span>
+                                    <field name="amount_total" widget="monetary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_view_form" model="ir.ui.view">
+        <field name="name">ac.customer.job.form</field>
+        <field name="model">ac.customer.job</field>
+        <field name="arch" type="xml">
+            <form string="Service Engagement">
+                <header>
+                    <button name="action_assign_to" string="Assign To" type="object"
+                            confirm="Do you want to assign this service engagement to another user?"
+                            attrs="{'invisible': [('state', '!=', 'not_started')]}"/>
+                    <button name="action_mark_started" string="Mark Started" type="object"
+                            confirm="Are you sure you want to mark this service engagement as Started?"
+                            attrs="{'invisible': [('state', '!=', 'not_started')]}"/>
+                    <button name="action_mark_in_progress" string="Mark In Progress" type="object"
+                            confirm="Are you sure you want to mark this service engagement as In Progress?"
+                            attrs="{'invisible': [('state', '!=', 'started')]}"/>
+                    <button name="action_mark_done" string="Mark Done" type="object"
+                            confirm="Are you sure you want to mark this service engagement as Done?"
+                            attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                    <button name="action_mark_declined" string="Mark Declined" type="object"
+                            confirm="Are you sure you want to mark this service engagement as Declined?"
+                            attrs="{'invisible': [('state', 'in', ['done', 'declined'])]}"/>
+                    <button name="action_record_payment" string="Record Payment" type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': ['|', ('state', '=', 'declined'), ('amount_remaining', '&lt;=', 0)]}"/>
+                    <button name="action_request_refund" string="Request Refund" type="object"
+                            class="btn-secondary"
+                            attrs="{'invisible': ['|', ('state', '!=', 'declined'), ('amount_refundable', '&lt;=', 0)]}"/>
+                    <field name="amount_refundable" invisible="1"/>
+                    <field name="state" widget="statusbar"
+                           options="{'clickable': False}"
+                           statusbar_visible="not_started,started,in_progress,done"/>
+                </header>
+                <sheet>
+                    <field name="is_frozen" invisible="1"/>
+                    <widget name="web_ribbon" title="Done" bg_color="bg-success"
+                            attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                    <widget name="web_ribbon" title="Declined" bg_color="bg-danger"
+                            attrs="{'invisible': [('state', '!=', 'declined')]}"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1" groups="!ac_customer_receivable.group_ac_customer_receivable_administrator"
+                                   attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                                   attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="customer_id"
+                                   attrs="{'readonly': [('is_frozen', '=', True)]}"
+                                   options="{'no_open': True, 'no_quick_create': True}"
+                                   context="{'default_company_id': company_id, 'form_view_ref': 'ac_customer_receivable.ac_customer_master_view_form'}"
+                                   domain="[('company_id', '=', company_id)]"/>
+                        </group>
+                        <group string="Tracking">
+                            <field name="created_date" readonly="1"/>
+                            <field name="created_by" readonly="1" options="{'no_open': True}"/>
+                            <field name="assigned_user_id" readonly="1" options="{'no_open': True}"/>
+                            <field name="job_start_date" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="job_end_date" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                        </group>
+                    </group>
+                    <group attrs="{'invisible': [('customer_id', '=', False)]}">
+                        <field name="customer_name" invisible="1"/>
+                        <group string="Contact Details">
+                            <field name="customer_company" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="customer_contact_number" widget="phone"
+                                   attrs="{'readonly': [('is_frozen', '=', True)]}"
+                                   options="{'enable_sms': false}"/>
+                            <field name="customer_email" widget="email" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="customer_aadhar_no" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="customer_pan_no" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                        </group>
+                        <group string="Address">
+                            <label for="customer_house_no" string="Address"/>
+                            <div class="o_address_format">
+                                <field name="customer_house_no" placeholder="House No/Flat No" class="o_address_street"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_street" placeholder="Street Name" class="o_address_street"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_street2" placeholder="Street 2" class="o_address_street"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_city" placeholder="City" class="o_address_city"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_state_id" placeholder="State" class="o_address_state"
+                                       domain="[('country_id', '=', customer_country_id)]"
+                                       options="{'no_open': True, 'no_create': True}"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_zip" placeholder="PINCODE" class="o_address_zip"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                                <field name="customer_country_id" placeholder="Country" class="o_address_country"
+                                       options="{'no_open': True, 'no_create': True}"
+                                       attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            </div>
+                        </group>
+                    </group>
+                    <group string="Bank Account Details" attrs="{'invisible': [('customer_id', '=', False)]}">
+                        <group>
+                            <field name="customer_bank_account_number" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                            <field name="customer_bank_ifsc_code" attrs="{'readonly': [('is_frozen', '=', True)]}"/>
+                        </group>
+                        <group/>
+                    </group>
+                    <notebook>
+                        <page string="Services" name="services">
+                            <field name="line_ids" options="{'no_open': True}"
+                                   attrs="{'readonly': [('is_frozen', '=', True)]}">
+                                <tree string="Services" editable="bottom"
+                                      create="1" delete="1">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="slno" readonly="1"/>
+                                    <field name="service_id"
+                                           domain="['|', ('company_ids', '=', False), ('company_ids', 'in', [company_id])]"/>
+                                    <field name="description"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="company_id" invisible="1"/>
+                                </tree>
+                            </field>
+                            <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="grand_total">
+                                    <field name="amount_untaxed" widget="monetary"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="amount_total"/>
+                                    </div>
+                                    <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary"/>
+                                    <field name="amount_paid" widget="monetary"/>
+                                    <field name="amount_refunded" widget="monetary"
+                                           attrs="{'invisible': [('amount_refunded', '=', 0)]}"/>
+                                    <field name="amount_refundable" widget="monetary"
+                                           attrs="{'invisible': [('state', '!=', 'declined')]}"/>
+                                    <field name="amount_remaining" widget="monetary" class="oe_subtotal_footer_separator"
+                                           attrs="{'invisible': [('state', '=', 'declined')]}"/>
+                                </group>
+                                <div class="clearfix"/>
+                            </group>
+                            <field name="payment_ids" readonly="1" nolabel="1"
+                                   attrs="{'invisible': [('payment_ids', '=', [])]}">
+                                <tree string="Payments" create="0" edit="0" delete="0"
+                                      decoration-muted="state == 'reverted'">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="name" string="Receipt No"/>
+                                    <field name="payment_date"/>
+                                    <field name="payment_method"/>
+                                    <field name="payment_scope" optional="hide"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="transaction_id" optional="show"/>
+                                    <field name="cheque_ref" optional="show"/>
+                                    <field name="upi_screenshot_filename" invisible="1"/>
+                                    <field name="upi_screenshot" filename="upi_screenshot_filename"
+                                           widget="image" options="{'size': [64, 64]}" optional="hide"/>
+                                    <field name="recorded_by" string="Recorded By"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'posted'"
+                                           decoration-muted="state == 'reverted'"/>
+                                    <button name="action_print_receipt" string="Payment Receipt" type="object"
+                                            icon="fa-print"
+                                            attrs="{'invisible': [('state', '!=', 'posted')]}"/>
+                                    <button name="action_revert" string="Revert" type="object"
+                                            icon="fa-undo"
+                                            confirm="Are you sure you want to revert this payment?"
+                                            attrs="{'invisible': ['|', ('state', '!=', 'posted'), ('parent.state', '=', 'declined')]}"/>
+                                </tree>
+                            </field>
+                            <separator string="Refunds" attrs="{'invisible': [('refund_ids', '=', [])]}"/>
+                            <field name="refund_ids" readonly="1" nolabel="1"
+                                   attrs="{'invisible': [('refund_ids', '=', [])]}">
+                                <tree string="Refunds" create="0" edit="0" delete="0"
+                                      decoration-warning="state == 'waiting_approval'"
+                                      decoration-success="state == 'approved'"
+                                      decoration-muted="state == 'rejected'">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="name"/>
+                                    <field name="request_date"/>
+                                    <field name="payment_method"/>
+                                    <field name="refund_scope" optional="hide"/>
+                                    <field name="amount" widget="monetary"/>
+                                    <field name="transaction_id" optional="hide"/>
+                                    <field name="cheque_ref" optional="hide"/>
+                                    <field name="requested_by"/>
+                                    <field name="approved_by" optional="show"/>
+                                    <field name="state" widget="badge"
+                                           decoration-warning="state == 'waiting_approval'"
+                                           decoration-success="state == 'approved'"
+                                           decoration-danger="state == 'rejected'"/>
+                                    <button name="action_approve" string="Approve" type="object"
+                                            icon="fa-check"
+                                            class="text-success"
+                                            groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                                            confirm="Approve this refund and post the statement counter entry?"
+                                            attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+                                    <button name="action_reject" string="Reject" type="object"
+                                            icon="fa-times"
+                                            class="text-danger"
+                                            groups="ac_customer_receivable.group_ac_customer_receivable_administrator"
+                                            confirm="Reject this refund request?"
+                                            attrs="{'invisible': [('state', '!=', 'waiting_approval')]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Activity Logs" name="state_logs" groups="ac_customer_receivable.group_ac_customer_receivable_administrator">
+                            <field name="state_log_ids" readonly="1">
+                                <tree string="Activity Logs" create="0" edit="0" delete="0">
+                                    <field name="log_date"/>
+                                    <field name="user_id"/>
+                                    <field name="log_type"/>
+                                    <field name="field_name"/>
+                                    <field name="from_state" optional="hide"/>
+                                    <field name="to_state" optional="hide"/>
+                                    <field name="old_value"/>
+                                    <field name="new_value"/>
+                                    <field name="has_upi_screenshot" invisible="1"/>
+                                    <button name="action_view_upi_screenshot"
+                                            string="View Screenshot"
+                                            type="object"
+                                            icon="fa-image"
+                                            class="btn-link"
+                                            attrs="{'invisible': [('has_upi_screenshot', '=', False)]}"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_view_search" model="ir.ui.view">
+        <field name="name">ac.customer.job.search</field>
+        <field name="model">ac.customer.job</field>
+        <field name="arch" type="xml">
+            <search string="Service Engagements">
+                <field name="name"/>
+                <field name="customer_id" string="Customer"
+                       filter_domain="['|', '|', '|', '|', ('customer_id.name', 'ilike', self), ('customer_id.contact_number', 'ilike', self), ('customer_id.email', 'ilike', self), ('customer_id.aadhar_no', 'ilike', self), ('customer_id.pan_no', 'ilike', self)]"/>
+                <field name="state"/>
+                <field name="assigned_user_id"/>
+                <field name="created_by"/>
+                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                <filter string="My Engagements" name="my_engagements"
+                        domain="['|', ('create_uid', '=', uid), ('assigned_user_id', '=', uid)]"/>
+                <filter string="Created by Me" name="created_by_me" domain="[('create_uid', '=', uid)]"/>
+                <filter string="Assigned to Me" name="assigned_to_me" domain="[('assigned_user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Not Declined" name="not_declined" domain="[('state', '!=', 'declined')]"/>
+                <filter string="Not Started" name="not_started" domain="[('state', '=', 'not_started')]"/>
+                <filter string="Started" name="started" domain="[('state', '=', 'started')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Declined" name="declined" domain="[('state', '=', 'declined')]"/>
+                <separator/>
+                <filter string="Unpaid" name="payment_unpaid" domain="[('payment_status', '=', 'unpaid')]"/>
+                <filter string="Partially Paid" name="payment_partial" domain="[('payment_status', '=', 'partial')]"/>
+                <filter string="Paid" name="payment_paid" domain="[('payment_status', '=', 'paid')]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Assigned To" name="group_assigned_user" context="{'group_by': 'assigned_user_id'}"/>
+                    <filter string="Created By" name="group_created_by" context="{'group_by': 'created_by'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Payment Status" name="group_payment_status" context="{'group_by': 'payment_status'}"/>
+                    <filter string="Company" name="group_company" context="{'group_by': 'company_id'}"
+                            groups="ac_customer_receivable.group_ac_customer_receivable_administrator"/>
+                    <filter string="Created Date" name="group_created_date" context="{'group_by': 'created_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="ac_customer_job_action" model="ir.actions.act_window">
+        <field name="name">Service Engagements</field>
+        <field name="res_model">ac.customer.job</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="search_view_id" ref="ac_customer_job_view_search"/>
+        <field name="context">{'search_default_not_declined': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service engagement
+            </p>
+            <p>
+                Manage service engagements linked to customer master records.
+            </p>
+        </field>
+    </record>
+
+</odoo>

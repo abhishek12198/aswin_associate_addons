@@ -1,0 +1,47 @@
+{
+    'name': 'AC Customer Receivable',
+    'version': '15.0.1.2.0',
+    'category': 'Accounting',
+    'summary': 'Customer receivable management',
+    'description': """
+        Customer receivable management module.
+    """,
+    'author': 'Aswin Associate',
+    'website': '',
+    'depends': [
+        'base',
+        'account',
+        'mail',
+    ],
+    'data': [
+        'security/ac_customer_receivable_security.xml',
+        'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',
+        'data/ir_cron_data.xml',
+        'report/ac_payment_receipt_report.xml',
+        'report/ac_payment_receipt_templates.xml',
+        'views/ac_customer_master_views.xml',
+        'views/ac_customer_statement_views.xml',
+        'views/ac_customer_job_views.xml',
+        'views/ac_customer_job_assign_wizard_views.xml',
+        'views/ac_customer_job_payment_wizard_views.xml',
+        'views/ac_customer_job_refund_views.xml',
+        'views/ac_service_views.xml',
+        'views/res_users_views.xml',
+        'views/ac_res_users_views.xml',
+        'views/hidden_menus.xml',
+        'views/menu.xml',
+    ],
+    'post_init_hook': 'post_init_hook',
+    'assets': {
+        'web.assets_backend': [
+            'ac_customer_receivable/static/src/css/form_readonly.css',
+            'ac_customer_receivable/static/src/css/customer_job_kanban.css',
+            'ac_customer_receivable/static/src/js/kanban_frozen.js',
+        ],
+    },
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

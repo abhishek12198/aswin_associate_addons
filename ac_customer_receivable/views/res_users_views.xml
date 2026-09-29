@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_users_form_inherit_ac_customer_receivable" model="ir.ui.view">
+        <field name="name">res.users.form.inherit.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='access_rights']/group[field[@name='company_ids']]" position="attributes">
+                <attribute name="attrs">{}</attribute>
+                <attribute name="string">Companies</attribute>
+            </xpath>
+            <xpath expr="//page[@name='access_rights']//field[@name='company_ids']" position="attributes">
+                <attribute name="string">Allowed Companies</attribute>
+            </xpath>
+            <xpath expr="//page[@name='access_rights']//field[@name='company_id']" position="attributes">
+                <attribute name="string">Default Company</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_simple_form_inherit_ac_customer_receivable" model="ir.ui.view">
+        <field name="name">res.users.simplified.form.inherit.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_simple_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//label[@for='company_id']" position="replace">
+                <field name="company_ids" widget="many2many_tags"
+                       options="{'no_create': True}"
+                       string="Allowed Companies"/>
+                <label for="company_id" string="Default Company"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="groups"/>
+                <attribute name="string">Default Company</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_users_tree_inherit_ac_customer_receivable" model="ir.ui.view">
+        <field name="name">res.users.tree.inherit.ac.customer.receivable</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="attributes">
+                <attribute name="groups"/>
+                <attribute name="string">Default Company</attribute>
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="company_ids" widget="many2many_tags" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

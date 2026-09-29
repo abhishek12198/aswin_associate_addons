@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="ac_service_view_tree" model="ir.ui.view">
+        <field name="name">ac.service.tree</field>
+        <field name="model">ac.service</field>
+        <field name="arch" type="xml">
+            <tree string="Services">
+                <field name="name"/>
+                <field name="amount"/>
+                <field name="currency_id"/>
+                <field name="company_ids" widget="many2many_tags" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="ac_service_view_form" model="ir.ui.view">
+        <field name="name">ac.service.form</field>
+        <field name="model">ac.service</field>
+        <field name="arch" type="xml">
+            <form string="Service">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger"
+                            attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Service Name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="currency_id" options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="company_ids" widget="many2many_tags"
+                                   options="{'no_create': True}"
+                                   placeholder="All companies if empty"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Description">
+                        <field name="description" nolabel="1" placeholder="Description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ac_service_view_search" model="ir.ui.view">
+        <field name="name">ac.service.search</field>
+        <field name="model">ac.service</field>
+        <field name="arch" type="xml">
+            <search string="Services">
+                <field name="name"/>
+                <field name="description"/>
+                <field name="company_ids"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="ac_service_action" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="res_model">ac.service</field>
+        <field name="view_mode">tree,form</field>
+        <field name="groups_id" eval="[(4, ref('group_ac_customer_receivable_staff')), (4, ref('group_ac_customer_receivable_administrator'))]"/>
+        <field name="search_view_id" ref="ac_service_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service
+            </p>
+            <p>
+                Define services with amount and currency.
+            </p>
+        </field>
+    </record>
+
+</odoo>

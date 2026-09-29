@@ -1,0 +1,40 @@
+// ─── AC Business Theme Variables ─────────────────────────────────────────────
+
+// ── Palette ──────────────────────────────────────────────────────────────────
+$ac-navy-dark:    #0c1f4d;
+$ac-navy:         #1a3a8a;
+$ac-blue:         #2b59c3;
+$ac-blue-light:   #4a7ae0;
+$ac-accent:       #ffffff;
+$ac-accent-soft:  #e8eef9;
+$ac-surface:      #f4f6fb;
+$ac-text-light:   rgba(255, 255, 255, 0.92);
+$ac-text-muted:   rgba(255, 255, 255, 0.55);
+$ac-glass:        rgba(255, 255, 255, 0.08);
+$ac-glass-hover:  rgba(255, 255, 255, 0.14);
+$ac-border-soft:  rgba(255, 255, 255, 0.18);
+
+// ── Fonts — system stack first for instant paint (no CDN wait) ───────────────
+$font-family-sans-serif: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+// ── Border radius ────────────────────────────────────────────────────────────
+$border-radius:    4px;
+$border-radius-lg: 6px;
+$border-radius-sm: 2px;
+
+// ── Links ────────────────────────────────────────────────────────────────────
+$link-color: lighten($ac-blue, 8%);
+
+// ── Apps Sidebar ─────────────────────────────────────────────────────────────
+$ac-sidebar-width-large: 200px;
+$ac-sidebar-width-small:  52px;
+$ac-sidebar-bg:    $ac-navy-dark;
+$ac-sidebar-color: $ac-text-light;
+
+// ── List Footer ──────────────────────────────────────────────────────────────
+$o-list-footer-bg-color: $ac-navy-dark;
+
+// ── Chatter ──────────────────────────────────────────────────────────────────
+$ac-form-min-width:    0;
+$ac-chatter-min-width: 280px;
+$ac-chatter-max-width: 600px;
