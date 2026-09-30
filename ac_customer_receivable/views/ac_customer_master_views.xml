@@ -7,14 +7,15 @@
         <field name="arch" type="xml">
             <tree string="Customers">
                 <field name="name"/>
+                <field name="customer_company"/>
                 <field name="contact_number"/>
-                <field name="email"/>
-                <field name="city"/>
-                <field name="state_id"/>
-                <field name="country_id"/>
+                <field name="email" invisible="1"/>
+                <field name="city" invisible="1"/>
+                <field name="state_id" invisible="1"/>
+                <field name="country_id" invisible="1"/>
                 <field name="currency_id" invisible="1"/>
                 <field name="receivable_balance" widget="monetary"/>
-                <field name="company_id" groups="ac_customer_receivable.group_ac_customer_receivable_administrator" optional="hide"/>
+                <field name="company_id" invisible="1"/>
             </tree>
         </field>
     </record>

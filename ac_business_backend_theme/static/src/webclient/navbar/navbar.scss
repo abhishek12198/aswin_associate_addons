@@ -24,11 +24,15 @@
 
     .o_menu_sections {
         .o_nav_entry,
-        .o_dropdown > .dropdown-toggle {
+        .o_dropdown > .dropdown-toggle,
+        .o_menu_header_lvl_1,
+        .o_menu_header_lvl_2,
+        .o_menu_header_lvl_3 {
             font-family: $font-family-sans-serif;
             font-weight: 600;
             font-size: 0.92rem;
-            letter-spacing: 0.02em;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
             color: $ac-text-light;
             padding: 0 10px;
             transition: color 0.2s;
@@ -155,6 +159,8 @@
         font-family: $font-family-sans-serif;
         font-weight: 500;
         font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
 
         &:hover, &:focus {
             background: rgba(43, 89, 195, 0.45);
