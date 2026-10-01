@@ -94,8 +94,9 @@ class AcCustomerMaster(models.Model):
         args = args or []
         if name:
             domain = [
-                '|', '|', '|', '|',
+                '|', '|', '|', '|', '|',
                 ('name', operator, name),
+                ('customer_company', operator, name),
                 ('contact_number', operator, name),
                 ('email', operator, name),
                 ('aadhar_no', operator, name),

@@ -24,7 +24,10 @@
 
     .o_menu_sections {
         .o_nav_entry,
-        .o_dropdown > .dropdown-toggle,
+        .o-dropdown > .dropdown-toggle,
+        .dropdown-item,
+        .dropdown-header,
+        .o_more_dropdown_section,
         .o_menu_header_lvl_1,
         .o_menu_header_lvl_2,
         .o_menu_header_lvl_3 {
@@ -89,7 +92,7 @@
 
         .o_menu_sections {
             .o_nav_entry,
-            .o_dropdown > .dropdown-toggle {
+            .o-dropdown > .dropdown-toggle {
                 font-size: 0.85rem;
                 padding: 0 6px;
             }
@@ -159,8 +162,12 @@
         font-family: $font-family-sans-serif;
         font-weight: 500;
         font-size: 0.95rem;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        letter-spacing: 0.02em;
+    }
+
+    .o_user_menu .dropdown-item {
+        text-transform: none;
+        letter-spacing: normal;
 
         &:hover, &:focus {
             background: rgba(43, 89, 195, 0.45);

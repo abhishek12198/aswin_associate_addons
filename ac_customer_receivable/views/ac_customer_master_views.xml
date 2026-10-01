@@ -85,7 +85,7 @@
         <field name="model">ac.customer.master</field>
         <field name="arch" type="xml">
             <search string="Customers">
-                <field name="name"/>
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('customer_company', 'ilike', self)]"/>
                 <field name="contact_number"/>
                 <field name="email"/>
                 <field name="aadhar_no"/>
